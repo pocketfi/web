@@ -1,29 +1,26 @@
 import React from 'react'
-import { Route, Redirect } from  "react-router-dom";
-import {AuthState} from "../../../types/AuthState";
-import {RouteComponentProps} from 'react-router-dom';
-import {AppState} from "../../../store";
-import {connect} from "react-redux";
+import {Redirect, Route, RouteProps} from 'react-router-dom'
+import {AppState} from '../../../store'
+import {connect} from 'react-redux'
 
-export interface PrivateRoutProps extends RouteComponentProps, AuthState{
-    path: string;
-    component: React.FC;
+export interface PrivateRouteProps extends RouteProps {
+  token: boolean
 }
 
-class PrivateRout extends React.Component<PrivateRoutProps> {
-    constructor(props: PrivateRoutProps) {
-        super(props);
-    }
+class PrivateRoute extends Route<PrivateRouteProps> {
 
-    render() {
-        return  this.props.isAuthenticated ? (<Route  path={this.props.path}   component={this.props.component} />) :
-            (<Redirect  to="/login"/>);
-    }
+  render() {
+    return (
+      !this.props.token ?
+        <Redirect to="/login"/> :
+        <Route path={this.props.path} component={this.props.component}/>
+    )
+  }
 }
 
 const mapStateToProps = (state: AppState) => ({
-    // @ts-ignore
-    isAuthenticated: state.auth.isAuthenticated
-});
+  // @ts-ignore
+  token: state.auth.token
+})
 
-export default connect(mapStateToProps)(PrivateRout);
+export default connect(mapStateToProps)(PrivateRoute)

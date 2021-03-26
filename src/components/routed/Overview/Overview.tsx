@@ -1,17 +1,17 @@
 import React from 'react'
-import {OverviewBanner} from '../../embedded/OverviewBanner/OverviewBanner';
+import {OverviewBanner} from '../../embedded/OverviewBanner/OverviewBanner'
 import './Overview.sass'
-import {Separator} from '../../embedded/Separator/Separator';
-import {IoIosCalendar, MdAdd, MdAttachMoney, MdNotInterested, MdSettings, MdShowChart} from 'react-icons/all';
-import {Button} from 'reactstrap';
-import MenuItem from '../../embedded/MenuItem/MenuItem';
-import {connect} from 'react-redux';
-import {getTransactions} from '../../../actions/transactionAction';
-import {AppState} from '../../../store';
-import {Transaction} from '../../../types/Transaction';
-import {Rate} from '../../../types/Rate';
-import {TransactionType} from '../../../types/TransactionType';
-import {RouteComponentProps} from 'react-router-dom';
+import {Separator} from '../../embedded/Separator/Separator'
+import {IoIosCalendar, MdAdd, MdAttachMoney, MdNotInterested, MdSettings, MdShowChart} from 'react-icons/all'
+import {Button} from 'reactstrap'
+import MenuItem from '../../embedded/MenuItem/MenuItem'
+import {connect} from 'react-redux'
+import {getTransactions} from '../../../actions/transactionAction'
+import {AppState} from '../../../store'
+import {Transaction} from '../../../types/Transaction'
+import {Rate} from '../../../types/Rate'
+import {TransactionType} from '../../../types/TransactionType'
+import {RouteComponentProps} from 'react-router-dom'
 
 export enum OverviewCardType {
   DAY = 'day',
@@ -25,7 +25,7 @@ export interface Card {
   averageDelta?: number;
 }
 
-export interface OverviewProps extends RouteComponentProps{
+export interface OverviewProps extends RouteComponentProps {
   getTransactions(): void
 
   transactions: Transaction[]
@@ -34,7 +34,7 @@ export interface OverviewProps extends RouteComponentProps{
 
 class Overview extends React.Component<OverviewProps> {
   constructor(props: OverviewProps) {
-    super(props);
+    super(props)
     this.getTransactions()
   }
 
@@ -45,22 +45,22 @@ class Overview extends React.Component<OverviewProps> {
   }
 
   getTransactions() {
-    this.props.getTransactions();
+    this.props.getTransactions()
   }
 
   render() {
     // TODO: refactor. Move cards calculation to separate method
-    const transactions = this.props.transactions.filter(transaction => transaction.transactionType === TransactionType.EXPENSE);
+    const transactions = this.props.transactions.filter(transaction => transaction.transactionType === TransactionType.EXPENSE)
     const USD = this.props.rates.find(rate => {
       return rate.code === 'USD'
     })
-    let spentDay = 0;
-    let spentWeek = 0;
-    let spentMonth = 0;
-    let today = new Date();
-    var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7);
+    let spentDay = 0
+    let spentWeek = 0
+    let spentMonth = 0
+    let today = new Date()
+    var lastWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)
     transactions.forEach((transaction: Transaction) => {
-      let price = transaction.price;
+      let price = transaction.price
       if (transaction.currency !== 'USD') {
         const currency = this.props.rates.find(rate => {
           return rate.code === transaction.currency
@@ -69,14 +69,14 @@ class Overview extends React.Component<OverviewProps> {
           price = transaction.price * USD.value / currency.value
         }
       }
-      const transactionCreated = new Date(transaction.created);
+      const transactionCreated = new Date(transaction.created)
       if (transactionCreated.getFullYear() === today.getFullYear() && transactionCreated.getMonth() === today.getMonth() && transactionCreated.getDate() === today.getDate()) {
-        spentDay += price;
+        spentDay += price
       }
       if (transactionCreated > lastWeek) {
-        spentWeek += price;
+        spentWeek += price
       }
-      spentMonth += price;
+      spentMonth += price
     })
 
     const cards = [
@@ -95,7 +95,7 @@ class Overview extends React.Component<OverviewProps> {
         total: spentMonth,
         averageDelta: 12
       }
-    ];
+    ]
 
     return (
       <div className='overview'>
@@ -114,11 +114,11 @@ class Overview extends React.Component<OverviewProps> {
           <Button
             children={<MdAdd/>}
             title='New transaction'
-            onClick={() => { this.props.history.push('/new');}}
+            onClick={() => { this.props.history.push('/new')}}
           />
         </div>
       </div>
-    );
+    )
   }
 }
 
@@ -127,6 +127,6 @@ const mapStateToProps = (state: AppState) => ({
   transactions: state.transaction.transactions,
   // @ts-ignore
   rates: state.rate.rates
-});
+})
 
-export default connect(mapStateToProps, {getTransactions})(Overview);
+export default connect(mapStateToProps, {getTransactions})(Overview)

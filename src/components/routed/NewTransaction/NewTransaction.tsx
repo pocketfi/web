@@ -1,14 +1,14 @@
-import React from 'react';
-import {Button, Form, Input} from 'reactstrap';
-import {connect} from 'react-redux';
+import React from 'react'
+import {Button, Form, Input} from 'reactstrap'
+import {connect} from 'react-redux'
 import './NewTransaction.sass'
-import {Switcher} from '../../embedded/Switcher/Switcher';
-import {DropdownMenu} from '../../embedded/DropdownMenu/DropdownMenu';
-import {AppState} from '../../../store';
-import {newTransaction} from '../../../actions/transactionAction';
-import {CreateTransaction} from '../../../types/CreateTransaction';
-import {TransactionType} from '../../../types/TransactionType';
-import {RouteComponentProps} from 'react-router-dom';
+import {Switcher} from '../../embedded/Switcher/Switcher'
+import {DropdownMenu} from '../../embedded/DropdownMenu/DropdownMenu'
+import {AppState} from '../../../store'
+import {newTransaction} from '../../../actions/transactionAction'
+import {CreateTransaction} from '../../../types/CreateTransaction'
+import {TransactionType} from '../../../types/TransactionType'
+import {RouteComponentProps} from 'react-router-dom'
 
 export interface NewTransactionProps extends RouteComponentProps {
   newTransaction(transaction: CreateTransaction): void;
@@ -24,8 +24,41 @@ class NewTransaction extends React.Component<NewTransactionProps> {
     place: '',
     price: '0.00',
     currency: 'USD',
-    placeholder: 'USD'
-  };
+    placeholder: 'USD',
+    customStyles: {
+      option: (base: any, state: any) => ({
+        ...base,
+        backgroundColor: state.isSelected ? this.state.transactionType === TransactionType.INCOME ? '#52E071' : '#E05252' : '#f1f1f1',
+      }),
+      control: (base: any, state: any) => ({
+        ...base,
+        backgroundColor: '#f1f1f1',
+        borderRadius: '8px',
+        borderStyle: 'none',
+        borderColor: '#757575',
+        color: '#757575',
+        boxShadow: state.isFocused ? '0 0 0 1px #757575' : 0
+      }),
+      valueContainer: (base: any) => ({
+        ...base,
+        position: 'initial'
+      }),
+      menuList: (base: any) => ({
+        ...base,
+        fontSize: 14,
+        height: 130,
+        backgroundColor: '#f1f1f1',
+        textAlign: 'center'
+      }),
+      input: (base: any) => ({
+        ...base,
+        margin: 0,
+        padding: 0,
+        width: 50,
+        height: 30
+      })
+    }
+  }
 
   handleSubmit() {
     const transaction = new CreateTransaction(
@@ -33,9 +66,9 @@ class NewTransaction extends React.Component<NewTransactionProps> {
       this.state.category,
       this.state.place,
       this.state.price,
-      this.state.currency);
+      this.state.currency)
     this.props.newTransaction(transaction)
-    this.props.history.push('/overview');
+    this.props.history.push('/overview')
   }
 
   render() {
@@ -69,8 +102,12 @@ class NewTransaction extends React.Component<NewTransactionProps> {
               onChange={e => this.setState({price: e.target.value})}
               placeholder="0.00"
             />
-            <DropdownMenu placeholder={this.state.placeholder} options={this.props.codeRates}
-                          onChange={value => this.setState({currency: value})}/>
+            <DropdownMenu
+              placeholder={this.state.placeholder}
+              options={this.props.codeRates}
+              onChange={value => this.setState({currency: value})}
+              customStyles={this.state.customStyles}
+            />
           </div>
           <Button
             className={this.state.transactionType.toLowerCase()}
@@ -79,13 +116,13 @@ class NewTransaction extends React.Component<NewTransactionProps> {
           </Button>
         </Form>
       </div>
-    );
+    )
   }
 }
 
 const mapStateToProps = (state: AppState) => ({
   // @ts-ignore
   codeRates: state.rate.codeRates
-});
+})
 
-export default connect(mapStateToProps, {newTransaction})(NewTransaction);
+export default connect(mapStateToProps, {newTransaction})(NewTransaction)
