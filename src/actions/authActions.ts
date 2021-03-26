@@ -97,7 +97,8 @@ export const logout = () => (dispatch: Dispatch<AppActions>) => {
 }
 
 export const tokenConfig = (getState: () => AppState) => {
-  const token = (<RegisteredUser>getState().auth).token
+  const registeredUser = getState().auth as RegisteredUser
+  const token = registeredUser.token
 
   const config: ConfigHeaders = {
     headers: {
